@@ -1,122 +1,151 @@
-syntax on
-set smarttab
-set smartindent
-set sw=2
-set tabstop=2
-set expandtab
-set tw=80
-set nu
-set showcmd
 set ruler
 set showmatch
-set nowritebackup
-" set encoding=utf-8
-set encoding=latin1
-set wildignore+=*.o,*.obj,*.cmi,*.cmo,*.cma,*.cmx,*.a,*.cmxa,*.rem,*.lib,*.dll
-set wildignore+=*.exe,*.aux,*.blg,*.dvi,*.log,*.pdf,*.ps,*.eps
+set showmode
 
 
-fun CSettings()
-  " wrap C code around with #if 0 ... #endif
-  vmap ;, '<O<Esc>i#if 0<Esc>'>o<Esc>i#endif<Esc>
-  set foldmethod=syntax
-  map <F7> <ESC>:w<CR>:!make -f Makefile \| less<CR>
-  let Tlist_Auto_Open      = 0
-  let Tlist_Exit_OnlyWindow = 1
-  let Tlist_File_Fold_Auto_Close = 1
-  let Tlist_Process_File_Always = 1
-"  TlistAddFiles $PWD/source/hlib/*.c
-"  TlistAddFiles $PWD/include/*.h
-  nnoremap <silent> tt :TlistToggle<CR>
-  nnoremap <silent> tu :TlistUpdate<CR>
-  set path=/usr/include,./,$HOME/local/include
+" Required to be able to use keypad keys and map missed escape sequences
+set esckeys
 
-  " add recursive function which searches for a tags file upwards until finding
-  " one or reaching root
-  set tags=./tags,tags
-endfun
+" get easier to use and more user friendly vim defaults
+" CAUTION: This option breaks some vi compatibility. 
+"          Switch it off if you prefer real vi compatibility
+set nocompatible
 
-fun PythonSettings()
-  map <S-F5>  <ESC>:w<CR>:!python -B %<CR>
-  map <F5>  <ESC>:w<CR>:!idle %<CR>
-  " check syntax
-  map <F7>  <ESC>:w<CR>:!python -B -m py_compile %<CR>
-  set foldmethod=syntax
-  map ;st <ESC>opdb.set_trace()<ESC>:w<CR>
-  let Tlist_Auto_Open      = 0
-  let Tlist_Exit_OnlyWindow = 1
-  let Tlist_File_Fold_Auto_Close = 1
-  let Tlist_Process_File_Always = 1
-"  TlistAddFiles ./*.py
-  nnoremap <silent> tt :TlistToggle<CR>
-  nnoremap <silent> tu :TlistUpdate<CR>
-endfun
+" Complete longest common string, then each full match
+" enable this for bash compatible behaviour
+" set wildmode=longest,full
 
-fun DjangoSettings()
-  ab {{ {{  }}<ESC>3hi
-  ab {% {%  %}<ESC>3hi
-endfun
+" Try to get the correct main terminal type
+if &term =~ "xterm"
+    let myterm = "xterm"
+else
+    let myterm =  &term
+endif
+let myterm = substitute(myterm, "cons[0-9][0-9].*$",  "linux", "")
+let myterm = substitute(myterm, "vt1[0-9][0-9].*$",   "vt100", "")
+let myterm = substitute(myterm, "vt2[0-9][0-9].*$",   "vt220", "")
+let myterm = substitute(myterm, "\\([^-]*\\)[_-].*$", "\\1",   "")
 
-fun RubySettings()
-  map <S-F5> <ESC>:w<CR>:!ruby %<CR>
-  map <F5> <ESC>:w<CR>:!xterm irb %<CR>
-  map <F7> <ESC>:w<CR>:!ruby -c %<CR>
-  noremap X :!ri <cword><cr>
-endfun
+" Only do this part when compiled with support for autocommands. 
+if has("autocmd") 
+  " When editing a file, always jump to the last known cursor position. 
+  " Don't do it when the position is invalid or when inside an event handler 
+  " (happens when dropping a file on gvim). 
+  autocmd BufReadPost * 
+    \ if line("'\"") > 0 && line("'\"") <= line("$") | 
+    \   exe "normal g`\"" | 
+    \ endif 
+ 
+endif " has("autocmd")
 
-fun OctaveSettings()
-  noremap X <ESC>:!echo "help <cword>" \| octave \| less<CR>
-  highlight comment ctermfg=lightblue
-  map <S-F5> <ESC>:w<CR>:!octave %<CR>
-endfun
-
-" Need to see how to automate wrapping around code in python
-" try:
-" 	CODE
-" except:
-" 	import pdb, traceback
-" 	typ, value, tb = sys.exc_info()
-"   traceback.print_exc()
-"   pdb.post_mortem(tb)
-
-au BufNewFile,BufRead *.py          call PythonSettings()
-au BufNewFile,BufRead *.html        call DjangoSettings()
-au BufRead,BufNewFile *.rb          call RubySettings()
-au BufRead,BufNewFile	*.c,*.cpp,*.h call CSettings()
-au BufRead,BufNewFile *.m           call OctaveSettings()
-au BufNewFile,BufRead [mM]akefile set noexpandtab
-au BufNewFile,BufRead [mM]akefile map <F7> <ESC>:w<CR>:!make -f %<CR>
-
-fun BashSettings()
-  ab getopts while getopts "" opt; do<CR>case $opt in<CR><TAB>*)<CR>;;<CR><C-d>esac<CR><C-d>done<CR>shift $((OPTIND-1))<CR><ESC>?""
-  map <S-F5> <ESC>:w<CR>:!%:p<CR>
-  map <C-h> <ESC>ggi<CR><ESC>ki# Distributed under the GPLv2 license<CR># Juan Pablo de la Cruz Gutierrez<CR><ESC>:w<CR>
-endfun
-au BufRead,BufNewFile *.sh          call BashSettings()
-
-
-autocmd BufWritePre,FileWritePre *.html   ks|call LastMod()|'s
-fun LastMod()
-	if line("$") > 20
-	  let l = 20
-	else
-		let l = line("$")
-  endif
-	exe "1," . l . "g/Last modified: /s/Last modified: .*/Last modified: " .  
-			\ strftime("%Y %b %d")
-endfun
-
-set omnifunc=syntaxcomplete#Complete
-
-nnoremap <silent> ]l :call NextIndent(0,1,0,1)<CR>
-
-" set graphical font in gvim
-" :set gfn? returns the name of the currently used graphical font
-" another possibility is to call :set guifont? and then call
-" :set guifont with the result
-if has('gui_running')
-  set gfn=Monospace\ 9
+if has("gui_running")
   colorscheme desert
 endif
 
-set runtimepath+=/home/juampa/source/tools/YouCompleteMe
+syntax on
+set modelines=0
+set smarttab
+set autoindent
+set smartindent
+set shiftwidth=2
+set ts=2
+set softtabstop=2
+set expandtab
+set nowritebackup
+set showcmd
+set statusline=%F%m%r%h\ [FORMAT={%ff}]\ [TYPE=%Y]\ [POS=%04l,%04v]
+set ff=unix
+"set encoding=utf-8
+set encoding=latin1
+set nu
+set nofoldenable
+set autoread
+
+map <F10> :w!<CR>:!aspell -c %<CR>:e! %<CR>
+set wildignore+=*.o,*.obj,*.cmi,*.cmo,*.cma,*.cmx,*.a,*.cmxa,*.rem,*.lib,*.dll,*.exe
+set wildignore+=*.aux,*.blg,*.dvi,*.log,*.pdf,*.ps,*.eps
+" disable expandtab for makefiles, so that command lines start with a \t
+autocmd BufRead,BufWrite,BufNew *.mak set noexpandtab
+autocmd BufRead,BufWrite,BufNew [mM]akefile* set noexpandtab
+" files with name make.ti_c6x... are not recognized as makefiles
+autocmd BufRead [mM]ake* set syntax=make
+" currently there is no syntax description for lush, a lisp dialect
+autocmd BufRead *.lsh set ft=lisp
+" for gnuplot batch files
+autocmd BufRead *.gp set ft=gnuplot
+
+ab cperl #!/usr/bin/perl -w<CR><CR>use strict;<CR><CR>__END__<CR>Juan Pablo de la Cruz G.<ESC>gg
+
+" octave
+au BufRead,BufNewFile *.m  noremap X <ESC>:!echo "help <cword>" \| octave \| less<CR>
+au BufRead,BufNewFile *.m highlight comment ctermfg=lightblue
+au BufRead,BufNewFile *.m map <S-F5> <ESC>:w<CR>:!octave %<CR>
+
+" perl
+noremap _m :!perldoc <cword> <bar><bar> perldoc -m <cword><cr>
+au BufRead,BufNewFile *.pl call SetPerlOptions()
+function SetPerlOptions()
+   noremap X :!perldoc <cword> <bar><bar> perldoc -f <cword><cr>
+   map <F5> <ESC>:w<CR>:!perl -d %<CR>
+   map <S-F5> <ESC>:w<CR>:!perl %<CR>
+   map <F7> <ESC>:w<CR>:!perl -c %<CR>
+   highlight comment ctermfg=lightblue
+endfunction
+
+" python
+function SetPythonOptions()
+  map <S-F5> <ESC>:w<CR>:!python %<CR>
+  noremap X :!pydoc <cword><cr>
+  set sw=2
+endfunction
+au BufRead,BufNewFile *.py call SetPythonOptions()
+
+" ruby
+function SetRubyOptions()
+  map <S-F5> <ESC>:w<CR>:!ruby %<CR>
+  map <F7> <ESC>:w<CR>:!ruby -c %<CR>
+  noremap X :!ri <cword><cr>
+  set sw=2
+endfunction
+au BufRead,BufNewFile *.rb call SetRubyOptions()
+
+" c coding
+au BufNewFile,BufRead *.c,*.cpp,*.h call SetCOptions()
+function SetCOptions()
+  " setlocal foldmethod=syntax
+  " map <F6> ?{<CR>zf%<ESC>:nonhlsearch<CR>
+  " map <S-F6> /}<CR>zf%<ESC>:nonhlsearch<CR>
+  set tw=79
+  " warns you if it finds lines exceeding the 80 characters limit
+  syntax match Search /\%<80v.\%>77v/
+  syntax match ErrorMsg /\%>79v.\+/
+  " wrap visual selection with #if 0 #endif clauses
+  vmap ;, '<ESC>di#if 0<CR><ESC>P`]I#endif<CR><ESC>'
+  ab #i #include
+  ab #d #define
+  ab cmain #include <stdio.h><CR><CR>int main(int argc,char **argv)<CR>{<CR>	return 0;<CR>}<C-d><CR><ESC>gg
+	map <F7> <ESC>:w<CR>:!make<CR>
+endfunction
+
+" bash
+au BufRead,BufNewFile *.sh map <S-F5> <ESC>:w<CR>:!%:p<CR>
+ab getopts while getopts "" opt; do<CR>case $opt in<CR><TAB>*)<CR>;;<CR><C-d>esac<CR><C-d>done<CR>shift $((OPTIND-1))<CR><ESC>?""
+
+cnoremap <TAB> <C-L><C-D>
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" set up YouCompleteMe plugin
+set nocompatible              " be iMproved, required
+" filetype off                  " required
+
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+Plugin 'Valloric/YouCompleteMe'
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
