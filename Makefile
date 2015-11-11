@@ -10,7 +10,7 @@ CFLAGS = -Wall -O3 -openmp -DBOUNDARY=32 -xHost -vec-report5 -std=c11 # -g
 LDFLAGS = -lm
 else
 CC = gcc
-CFLAGS = -Wall -O3 -fopenmp -std=c11 -DBOUNDARY=32 -march=native -std=c11 \
+CFLAGS = -Wall -O3 -fopenmp -std=c11 -DBOUNDARY=32 -march=native \
 	 			 -ftree-vectorizer-verbose=1 -ftree-vectorize -g
 
 LDFLAGS = -lm -lgomp
