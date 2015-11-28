@@ -1,5 +1,8 @@
 # Default Makefile template for C/C++ projects
 # Juan Pablo de la Cruz Gutierrez
+#
+# This makefie is released in terms of the GPL3 license.
+# See http://www.gnu.org/licenses/gpl-3.0.en.html for details.
 
 INCLUDES = -I.
 # LIBS = -L.
@@ -30,25 +33,31 @@ LDFLAGS = -lm -lgomp
 endif
 
 # pass it as an argument to the makefile
+# It is expected that the file src/$(PROG).c exists
 # PROG := algebra
-SRCS := $(PROG).c
+SRCDIR := src
+OBJDIR := obj
+SRCS := $(notdir $(wildcard $(SRCDIR)/*.c))
 OBJS := $(patsubst %.c,%.o,$(SRCS))
-ASM  := $(patsubst %.c,%.s,$(SRCS))
 
-.PHONY:	all clean $(PROG)
+.PHONY:	all clean asm $(PROG)
 
-%.o:%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c $<
+all: $(PROG)
 
-%.s:%.c
-	$(CC) $(CFLAGS) $(INCLUDES) -S -masm=intel $<
-
-$(PROG): $(OBJS)
-	$(CC) $(CFLAGS) $(LIBS) -o $@ $^ $(LDFLAGS)
-	-strip -s $(PROG)
+%.o:$(SRCDIR)/%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $(OBJDIR)/$@
 
 asm: $(PROG).s
 
+%.s:$(SRCDIR)/%.c
+	$(CC) $(CFLAGS) $(INCLUDES) -S -masm=intel $<
+
+$(PROG): $(OBJS)
+	$(CC) $(CFLAGS) $(LIBS) -o $@ $(addprefix $(OBJDIR)/,$^) $(LDFLAGS)
+ifeq ($(STATE),release)
+	-strip -s $(PROG)
+endif
+
 clean:
-	-rm -f *.o $(PROG) *.s 1
+	-rm -f $(OBJDIR)/* $(PROG) *.s 1
 
