@@ -55,8 +55,8 @@ set nowritebackup
 set showcmd
 set statusline=%F%m%r%h\ [FORMAT={%ff}]\ [TYPE=%Y]\ [POS=%04l,%04v]
 set ff=unix
-"set encoding=utf-8
-set encoding=latin1
+set encoding=utf-8
+"set encoding=latin1
 set nu
 set nofoldenable
 set autoread
@@ -94,9 +94,11 @@ endfunction
 
 " python
 function SetPythonOptions()
-  map <S-F5> <ESC>:w<CR>:!python %<CR>
+  map <F5> <ESC>:w<CR>:!python %<CR>
   noremap X :!pydoc <cword><cr>
   set sw=2
+  " fold on space
+  noremap <space> za
 endfunction
 au BufRead,BufNewFile *.py call SetPythonOptions()
 
@@ -127,25 +129,37 @@ function SetCOptions()
 	map <F7> <ESC>:w<CR>:!make<CR>
 endfunction
 
+au BufNew,BufNewFile,BufRead *.js call SetJSOptions()
+function SetJSOptions()
+  set sw=2
+  set expandtab
+  map <S-F5> <ESC>:w<CR>:!node %<CR>
+endfunction
+
 " bash
 au BufRead,BufNewFile *.sh map <S-F5> <ESC>:w<CR>:!%:p<CR>
 ab getopts while getopts "" opt; do<CR>case $opt in<CR><TAB>*)<CR>;;<CR><C-d>esac<CR><C-d>done<CR>shift $((OPTIND-1))<CR><ESC>?""
 
-cnoremap <TAB> <C-L><C-D>
-
-" set the runtime path to include Vundle and initialize
+set nocompatible
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'tpope/vim-fugitive'
+Bundle 'Lokaltog/powerline' , {'rtp': 'powerline/bindings/vim/'}
+Bundle 'scrooloose/nerdtree'
+Bundle 'klen/python-mode'
+Bundle 'davidhalter/jedi-vim'
+call vundle#end()
+filetype plugin indent on
+set laststatus=2
+" settings for python-mode
+let g:pymode_rope = 0
+let g:pymode_doc = 1
+let g:pymode_doc_key = 'K'
+let g:pymode_breakpoint=1
+let g:pymode_breakpoint_bind='<leader>b'
+let g:pymode_syntax=1
+let g:pymode_folding=0
 
-" set up YouCompleteMe plugin
-set nocompatible              " be iMproved, required
-" filetype off                  " required
-
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
+execute pathogen#infect()
+filetype plugin indent on
