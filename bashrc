@@ -56,17 +56,23 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# if [ "$color_prompt" = yes ]; then
+#     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+# else
+#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+# fi
+
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\W\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\u@\h: \W \$ '
 fi
 unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \W\a\]$PS1"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
     ;;
 *)
     ;;
@@ -85,14 +91,12 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -hlF'
-alias la='ls -hA'
-alias l='ls -CFh'
-alias df='df -h'
-alias du='du -sh'
-alias python="python -B"
-alias ps="ps au"
-alias gvim="quiet gvim"
+alias ls="ls -h --color=auto"
+alias ll='ls -alF'
+alias la='ls -la'
+alias l='ls -CF'
+alias du='du -h'
+alias ps="ps -u $USER"
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -117,30 +121,27 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
-shopt -s direxpand
-shopt -s cdable_vars
 
-export EDITOR=vim
-export ANDROIDPATH=/opt/android-studio
-export PATH=$ANDROIDPATH/bin:/opt/android-sdk-linux/tools:$HOME/local/bin:$HOME/bin:/opt/gdb/bin:$PATH
-# export PS1="\u@\h:\W\e[0;33m\$(__git_ps1)\e[0m>"
-export LD_LIBRARY_PATH="$HOME/local/lib:/opt/gdb/lib:$ANDROIDPATH/lib64:$ANDROIDPATH/lib:$LD_LIBRARY_PATH"
+export PATH=$HOME/.local/bin:/opt/idea/bin:/opt/android-studio/bin:$HOME/local/bin:/opt/VSCode:$PATH
+# workaoround for ibus problem with IDEs
+alias android=" IBUS_ENABLE_SYNC_MODE=1 ibus-daemon -xrd && android-studio"
 
-source /opt/intel/composerxe/bin/compilervars.sh intel64
-source /opt/intel/inspector_xe_2013/inspxe-vars.sh intel64
-export PATH=/opt/cuda-6.0:$PATH
-export LD_LIBRARY_PATH=/opt/cuda-6.0/lib64:$LD_LIBRARY_PATH
-export PYTHONPATH="$HOME/local/lib/python"
-
-pyhelp()
+quiet()
 {
-  chromium-browser /usr/share/doc/python2.7/html/index.html 2>&1 >/dev/null &
+  exec "$*" &
 }
 
-clean_env_var()
-{
-  eval "export \$$1="$(eval "echo \$$1" | tr ':' '\n' | sort | uniq | tr '\n' ':')
-}
+export NODE_PATH=/home/juampa/.local/lib/node_modules:/usr/local/lib/node_modules/
+# add path to intel tools
+# export PATH=$PATH:$(find /opt/intel/ -name "bin" -type d | tr '\n' :)
+source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
 
-export PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\W\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[1;37m\]'
-export CLASSPATH=/usr/share/java
+[ -s "/home/juampa/.dnx/dnvm/dnvm.sh" ] && . "/home/juampa/.dnx/dnvm/dnvm.sh" # Load dnvm
+export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages
+export NODE_PATH=$NODE_PATH:$HOME/node_modules
+# export ANDROID_SDK=/home/juampa/Android/Sdk
+# export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:$PATH
+
+alias ipython="ipython qtconsole &"
+alias ipython3="ipython3 qtconsole &"
+export POWERLINE_CONFIG_COMMAND=$HOME/.local/bin/powerline-config
