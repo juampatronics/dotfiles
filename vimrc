@@ -1,15 +1,9 @@
 set ruler
 set showmatch
 set showmode
-
-
+set nocompatible
 " Required to be able to use keypad keys and map missed escape sequences
 set esckeys
-
-" get easier to use and more user friendly vim defaults
-" CAUTION: This option breaks some vi compatibility. 
-"          Switch it off if you prefer real vi compatibility
-set nocompatible
 
 " Complete longest common string, then each full match
 " enable this for bash compatible behaviour
@@ -25,18 +19,6 @@ let myterm = substitute(myterm, "cons[0-9][0-9].*$",  "linux", "")
 let myterm = substitute(myterm, "vt1[0-9][0-9].*$",   "vt100", "")
 let myterm = substitute(myterm, "vt2[0-9][0-9].*$",   "vt220", "")
 let myterm = substitute(myterm, "\\([^-]*\\)[_-].*$", "\\1",   "")
-
-" Only do this part when compiled with support for autocommands. 
-if has("autocmd") 
-  " When editing a file, always jump to the last known cursor position. 
-  " Don't do it when the position is invalid or when inside an event handler 
-  " (happens when dropping a file on gvim). 
-  autocmd BufReadPost * 
-    \ if line("'\"") > 0 && line("'\"") <= line("$") | 
-    \   exe "normal g`\"" | 
-    \ endif 
- 
-endif " has("autocmd")
 
 if has("gui_running")
   colorscheme desert
@@ -69,17 +51,18 @@ autocmd BufRead,BufWrite,BufNew *.mak set noexpandtab
 autocmd BufRead,BufWrite,BufNew [mM]akefile* set noexpandtab
 " files with name make.ti_c6x... are not recognized as makefiles
 autocmd BufRead [mM]ake* set syntax=make
-" currently there is no syntax description for lush, a lisp dialect
-autocmd BufRead *.lsh set ft=lisp
 " for gnuplot batch files
 autocmd BufRead *.gp set ft=gnuplot
 
 ab cperl #!/usr/bin/perl -w<CR><CR>use strict;<CR><CR>__END__<CR>Juan Pablo de la Cruz G.<ESC>gg
 
 " octave
-au BufRead,BufNewFile *.m  noremap X <ESC>:!echo "help <cword>" \| octave \| less<CR>
-au BufRead,BufNewFile *.m highlight comment ctermfg=lightblue
-au BufRead,BufNewFile *.m map <S-F5> <ESC>:w<CR>:!octave %<CR>
+au BufRead,BufNewFile *.m call OctaveOptions()
+function OctaveOptions()
+  noremap X <ESC>:!echo "help <cword>" \| octave \| less<CR>
+  highlight comment ctermfg=lightblue
+  map <S-F5> <ESC>:w<CR>:!octave %<CR>
+endfunction
 
 " perl
 noremap _m :!perldoc <cword> <bar><bar> perldoc -m <cword><cr>
@@ -101,6 +84,7 @@ function SetPythonOptions()
   noremap <space> za
 endfunction
 au BufRead,BufNewFile *.py call SetPythonOptions()
+au BufRead,BufNewFile *.j2 set ft=htmljinja
 
 " ruby
 function SetRubyOptions()
@@ -137,8 +121,11 @@ function SetJSOptions()
 endfunction
 
 " bash
-au BufRead,BufNewFile *.sh map <S-F5> <ESC>:w<CR>:!%:p<CR>
-ab getopts while getopts "" opt; do<CR>case $opt in<CR><TAB>*)<CR>;;<CR><C-d>esac<CR><C-d>done<CR>shift $((OPTIND-1))<CR><ESC>?""
+au BufRead,BufNewFile *.sh call BashOptions()
+function BashOptions()
+  map <S-F5> <ESC>:w<CR>:!%:p<CR>
+  ab getopts while getopts "" opt; do<CR>case $opt in<CR><TAB>*)<CR>;;<CR><C-d>esac<CR><C-d>done<CR>shift $((OPTIND-1))<CR><ESC>?""
+endfunction
 
 set nocompatible
 set rtp+=~/.vim/bundle/Vundle.vim
