@@ -142,6 +142,6 @@ export NODE_PATH=$NODE_PATH:$HOME/node_modules
 # export ANDROID_SDK=/home/juampa/Android/Sdk
 # export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:$PATH
 
-alias ipython="ipython qtconsole &"
-alias ipython3="ipython3 qtconsole &"
+alias qpython="ipython qtconsole"
+alias qpython3="ipython3 qtconsole"
 export POWERLINE_CONFIG_COMMAND=$HOME/.local/bin/powerline-config
