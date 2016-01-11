@@ -132,6 +132,8 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
+" remember to install the necessary fonts from
+" https://github.com/powerline/fonts.git
 Bundle 'Lokaltog/powerline' , {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
