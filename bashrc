@@ -91,12 +91,14 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ls="ls -h --color=auto"
-alias ll='ls -alF'
-alias la='ls -la'
-alias l='ls -CF'
-alias du='du -h'
-alias ps="ps -u $USER"
+alias ll='ls -hlF'
+alias la='ls -hA'
+alias l='ls -CFh'
+alias df='df -h'
+alias du='du -sh'
+alias python="python -B"
+alias ps="ps ux"
+alias gvim="quiet gvim"
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -139,9 +141,10 @@ source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
 [ -s "/home/juampa/.dnx/dnvm/dnvm.sh" ] && . "/home/juampa/.dnx/dnvm/dnvm.sh" # Load dnvm
 export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages
 export NODE_PATH=$NODE_PATH:$HOME/node_modules
-# export ANDROID_SDK=/home/juampa/Android/Sdk
-# export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:$PATH
-
+export CLASSPATH=/usr/share/java
+export VISUAL=vim
+export JAVA_HOME=/usr/lib64/jvm/java-8-openjdk
 alias qpython="ipython qtconsole"
 alias qpython3="ipython3 qtconsole"
 export POWERLINE_CONFIG_COMMAND=$HOME/.local/bin/powerline-config
+source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
