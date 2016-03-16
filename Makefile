@@ -7,6 +7,9 @@
 INCLUDES = -I.
 # LIBS = -L.
 
+STATE=debug
+COMP=gcc
+
 STATE=release
 ifeq ($(STATE),release)
 CFLAGS=-O3
@@ -24,13 +27,22 @@ ifeq ($(COMP),icc)
 CC = icc
 CFLAGS += -Wall -openmp -DBOUNDARY=32 -xHost -vec-report5 -std=c11
 LDFLAGS = -lm
-else
+endif
+
+ifeq ($(COMP),gcc)
 CC = gcc
 CFLAGS = -Wall -O3 -fopenmp -std=c11 -DBOUNDARY=32 -march=native \
 	 			 -ftree-vectorizer-verbose=1 -ftree-vectorize -g
 
 LDFLAGS = -lm -lgomp
 endif
+
+# call make print-VARNAME to display its value
+print-%:
+	@echo '$*=$($*)'
+	@echo 'origin $*=$(origin $*)'
+	@echo 'flavor $*=$(flavor $*)'
+	@echo 'value $*=$(value $*)'
 
 # pass it as an argument to the makefile
 # It is expected that the file src/$(PROG).c exists
