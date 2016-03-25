@@ -133,12 +133,12 @@ quiet()
   exec "$*" &
 }
 
-export NODE_PATH=/home/juampa/.local/lib/node_modules:/usr/local/lib/node_modules/
+export NODE_PATH=$HOME/.local/lib/node_modules:/usr/local/lib/node_modules/
 # add path to intel tools
 # export PATH=$PATH:$(find /opt/intel/ -name "bin" -type d | tr '\n' :)
 source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
 
-[ -s "/home/juampa/.dnx/dnvm/dnvm.sh" ] && . "/home/juampa/.dnx/dnvm/dnvm.sh" # Load dnvm
+[ -s "$HOME/.dnx/dnvm/dnvm.sh" ] && . "$HOME/.dnx/dnvm/dnvm.sh" # Load dnvm
 export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages
 export NODE_PATH=$NODE_PATH:$HOME/node_modules
 export CLASSPATH=/usr/share/java
