@@ -79,7 +79,10 @@ endfunction
 function SetPythonOptions()
   map <F5> <ESC>:w<CR>:!python %<CR>
   noremap X :!pydoc <cword><cr>
-  set sw=2
+  set sw=4
+  set tabstop=4
+  set expandtab
+  set smarttab
   " fold on space
   noremap <space> za
 endfunction
@@ -152,6 +155,7 @@ let g:pymode_folding=0
 
 execute pathogen#infect()
 filetype plugin indent on
+au BufNewFile,BufRead * map <C-n> <ESC>:NERDTree<CR>
 set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
 
 " Always show statusline
