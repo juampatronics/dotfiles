@@ -56,23 +56,10 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-# if [ "$color_prompt" = yes ]; then
-#     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-# else
-#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-# fi
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\W\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h: \W \$ '
-fi
-unset color_prompt force_color_prompt
-
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \W\a\]$PS1"
     ;;
 *)
     ;;
@@ -123,16 +110,29 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+shopt -s direxpand
+shopt -s cdable_vars
 
-export PATH=$HOME/.local/bin:/opt/idea/bin:/opt/android-studio/bin:$HOME/local/bin:/opt/VSCode:$PATH
-# workaoround for ibus problem with IDEs
-alias android=" IBUS_ENABLE_SYNC_MODE=1 ibus-daemon -xrd && android-studio"
+export EDITOR=vim
+export ANDROIDPATH=$HOME/opt/android-studio
+export PATH=$ANDROIDPATH/bin:$HOME/opt/android-sdk-linux/tools:$HOME/opt/idea/bin:$HOME/local/bin:$HOME/bin:$PATH
+export PATH=$HOME/opt/UltraGDB:$PATH
+export LD_LIBRARY_PATH="$HOME/local/lib:$ANDROIDPATH/lib64:$ANDROIDPATH/lib:$LD_LIBRARY_PATH"
 
-quiet()
+# source /opt/intel/composerxe/bin/compilervars.sh intel64
+# source /opt/intel/inspector_xe_2013/inspxe-vars.sh intel64
+
+pyhelp()
 {
-  exec "$*" &
+  chromium-browser /usr/share/doc/python2.7/html/index.html 2>&1 >/dev/null &
 }
 
+clean_env_var()
+{
+  eval "export \$$1="$(eval "echo \$$1" | tr ':' '\n' | sort | uniq | tr '\n' ':')
+}
+
+export PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\W\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[1;37m\]'
 export NODE_PATH=$HOME/.local/lib/node_modules:/usr/local/lib/node_modules/
 # add path to intel tools
 # export PATH=$PATH:$(find /opt/intel/ -name "bin" -type d | tr '\n' :)
@@ -140,11 +140,13 @@ source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
 
 [ -s "$HOME/.dnx/dnvm/dnvm.sh" ] && . "$HOME/.dnx/dnvm/dnvm.sh" # Load dnvm
 export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages
-export NODE_PATH=$NODE_PATH:$HOME/node_modules
 export CLASSPATH=/usr/share/java
 export VISUAL=vim
 export JAVA_HOME=/usr/lib64/jvm/java-8-openjdk
-alias qpython="ipython qtconsole"
-alias qpython3="ipython3 qtconsole"
-export POWERLINE_CONFIG_COMMAND=$HOME/.local/bin/powerline-config
-source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
+export PATH="$HOME/.gem/ruby/2.2.0/bin:$HOME/local/opt/bin:$PATH"
+
+# start powerline
+powerline-daemon -q
+export POWERLINE_BASH_CONTINUATION=1
+export POWERLINE_BASH_SELECT=1
+. /usr/share/powerline/bindings/bash/powerline.sh
