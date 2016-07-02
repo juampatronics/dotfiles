@@ -86,6 +86,8 @@ alias du='du -sh'
 alias python="python -B"
 alias ps="ps ux"
 alias gvim="quiet gvim"
+alias cgrep="grep --color=always"
+alias cless="less -R"
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
