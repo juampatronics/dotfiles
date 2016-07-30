@@ -78,8 +78,9 @@ if [ -x /usr/bin/dircolors ]; then
 fi
 
 # some more ls aliases
-alias ll='ls -hlF'
-alias la='ls -hA'
+alias ls="ls -h --color=auto"
+alias ll='ls -alF'
+alias la='ls -la'
 alias l='ls -CFh'
 alias df='df -h'
 alias du='du -sh'
@@ -147,8 +148,26 @@ export VISUAL=vim
 export JAVA_HOME=/usr/lib64/jvm/java-8-openjdk
 export PATH="$HOME/.gem/ruby/2.2.0/bin:$HOME/local/opt/bin:$PATH"
 
-# start powerline
-powerline-daemon -q
-export POWERLINE_BASH_CONTINUATION=1
+alias qpython="ipython qtconsole"
+alias qpython3="ipython3 qtconsole"
+
+anaconda()
+{
+  ANACONDA="$HOME/.local/anaconda2"
+  export PATH=$ANACONDA/bin:$PATH
+  export LD_LIBRARY_PATH=$ANACONDA/lib:$LD_LIBRARY_PATH
+  export PYTHONPATH=$ANACONDA/lib/python2.7:$PYTHONPATH
+  echo "Loading Turi environment..."
+  source activate gl-env
+}
+
+
+# needed for intellij
+export IBUS_ENABLE_SYNC_MODE=1
+# prefer using oracle's java
+export PATH=/opt/jdk/bin:$PATH
+
+export POWERLINE_CONFIG_COMMAND=$HOME/.local/bin/powerline-config
+# powerline for bash
 export POWERLINE_BASH_SELECT=1
 . /usr/share/powerline/bindings/bash/powerline.sh
