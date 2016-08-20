@@ -141,9 +141,11 @@ Bundle 'Lokaltog/powerline' , {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
 Bundle 'davidhalter/jedi-vim'
+Bundle 'pangloss/vim-javascript'
+Bundle 'shougo/vimproc'
+Bundle 'shougo/vimshell'
 call vundle#end()
 filetype plugin indent on
-set laststatus=2
 " settings for python-mode
 let g:pymode_rope = 0
 let g:pymode_doc = 1
@@ -153,7 +155,6 @@ let g:pymode_breakpoint_bind='<leader>b'
 let g:pymode_syntax=1
 let g:pymode_folding=0
 
-execute pathogen#infect()
 filetype plugin indent on
 au BufNewFile,BufRead * map <C-n> <ESC>:NERDTree<CR>
 set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
