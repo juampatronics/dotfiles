@@ -130,11 +130,18 @@ function BashOptions()
   ab getopts while getopts "" opt; do<CR>case $opt in<CR><TAB>*)<CR>;;<CR><C-d>esac<CR><C-d>done<CR>shift $((OPTIND-1))<CR><ESC>?""
 endfunction
 
+nmap <F8> <ESC>:TagbarToggle<CR>
+
+" troff
+au BufRead,BufNewFile *.eqn map <F7> <ESC>:w<CR>:execute(":!eqn " . expand("%") . " \| groff > file.ps")<CR>
+au BufRead,BufNewFile *.tbl map <F7> <ESC>:w<CR>:execute(":!tbl " . expand("%") . " \| groff > file.ps")<CR>
+
 set nocompatible
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
+Plugin 'majutsushi/tagbar'
 " remember to install the necessary fonts from
 " https://github.com/powerline/fonts.git
 Bundle 'Lokaltog/powerline' , {'rtp': 'powerline/bindings/vim/'}
