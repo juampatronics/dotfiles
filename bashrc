@@ -125,18 +125,12 @@ export LD_LIBRARY_PATH="$HOME/local/lib:$ANDROIDPATH/lib64:$ANDROIDPATH/lib:$LD_
 # source /opt/intel/composerxe/bin/compilervars.sh intel64
 # source /opt/intel/inspector_xe_2013/inspxe-vars.sh intel64
 
-pyhelp()
-{
-  chromium-browser /usr/share/doc/python2.7/html/index.html 2>&1 >/dev/null &
-}
-
 clean_env_var()
 {
   eval "export \$$1="$(eval "echo \$$1" | tr ':' '\n' | sort | uniq | tr '\n' ':')
 }
 
 export PS1='\[\e[0;32m\]\u\[\e[m\] \[\e[1;34m\]\W\[\e[m\] \[\e[1;32m\]\$\[\e[m\] \[\e[1;37m\]'
-export NODE_PATH=$HOME/.local/lib/node_modules:/usr/local/lib/node_modules/
 # add path to intel tools
 # export PATH=$PATH:$(find /opt/intel/ -name "bin" -type d | tr '\n' :)
 source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
@@ -145,22 +139,6 @@ source /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh intel64
 export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages
 export CLASSPATH=/usr/share/java
 export VISUAL=vim
-export JAVA_HOME=/usr/lib64/jvm/java-8-openjdk
-export PATH="$HOME/.gem/ruby/2.2.0/bin:$HOME/local/opt/bin:$PATH"
-
-alias qpython="ipython qtconsole"
-alias qpython3="ipython3 qtconsole"
-
-anaconda()
-{
-  ANACONDA="$HOME/.local/anaconda2"
-  export PATH=$ANACONDA/bin:$PATH
-  export LD_LIBRARY_PATH=$ANACONDA/lib:$LD_LIBRARY_PATH
-  export PYTHONPATH=$ANACONDA/lib/python2.7:$PYTHONPATH
-  echo "Loading Turi environment..."
-  source activate gl-env
-}
-
 
 # needed for intellij
 export IBUS_ENABLE_SYNC_MODE=1
