@@ -171,3 +171,6 @@ export POWERLINE_CONFIG_COMMAND=$HOME/.local/bin/powerline-config
 # powerline for bash
 export POWERLINE_BASH_SELECT=1
 . /usr/share/powerline/bindings/bash/powerline.sh
+
+alias pyt="conda activate pytorch1.7"
+alias pydbg="python -m pdb -c continue
