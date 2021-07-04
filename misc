@@ -1,0 +1,5 @@
+# remove background color for ls command
+# https://stackoverflow.com/questions/40574819/how-to-remove-dir-background-in-ls-color-output
+
+dircolors -p | sed 's/;42/;01/' > ~/.dircolors
+source ~/.bashrc
